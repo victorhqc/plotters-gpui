@@ -1,5 +1,5 @@
 use crate::line::Line;
-use crate::utils::{color_to_hsla, cood_to_point};
+use crate::utils::{color_to_hsla, coord_to_point};
 use gpui::{point, px, Bounds, Pixels, SharedString, TextRun};
 use plotters_backend::{
     BackendColor, BackendCoord, BackendStyle, BackendTextStyle, DrawingBackend, DrawingErrorKind,
@@ -46,8 +46,8 @@ impl<'a, 'b> DrawingBackend for GpuiBackend<'a, 'b> {
         style: &S,
     ) -> Result<(), DrawingErrorKind<Self::ErrorType>> {
         let mut line = Line::between_points(
-            self.bounds.origin + cood_to_point(from).into(),
-            self.bounds.origin + cood_to_point(to).into(),
+            coord_to_point(self.bounds.origin, from).into(),
+            coord_to_point(self.bounds.origin, to).into(),
         );
         line.color = color_to_hsla(style.color());
         line.width = px(style.stroke_width() as _);
@@ -61,8 +61,8 @@ impl<'a, 'b> DrawingBackend for GpuiBackend<'a, 'b> {
         style: &S,
         fill: bool,
     ) -> Result<(), DrawingErrorKind<Self::ErrorType>> {
-        let upper_left = self.bounds.origin + cood_to_point(upper_left);
-        let bottom_right = self.bounds.origin + cood_to_point(bottom_right);
+        let upper_left = coord_to_point(self.bounds.origin, upper_left);
+        let bottom_right = coord_to_point(self.bounds.origin, bottom_right);
         let color = color_to_hsla(style.color());
         if fill {
             let mut path = gpui::Path::new(upper_left);
@@ -93,7 +93,7 @@ impl<'a, 'b> DrawingBackend for GpuiBackend<'a, 'b> {
         let iter = path.into_iter();
         let mut points = Vec::with_capacity(iter.size_hint().0 * 2);
         for point in iter {
-            points.push(self.bounds.origin + cood_to_point(point).into());
+            points.push(coord_to_point(self.bounds.origin, point).into());
         }
 
         if points.is_empty() {
@@ -118,9 +118,9 @@ impl<'a, 'b> DrawingBackend for GpuiBackend<'a, 'b> {
             Some(start) => start,
             None => return Ok(()),
         };
-        let mut path = gpui::Path::new(self.bounds.origin + cood_to_point(start));
+        let mut path = gpui::Path::new(coord_to_point(self.bounds.origin, start));
         for point in iter {
-            path.line_to(self.bounds.origin + cood_to_point(point));
+            path.line_to(coord_to_point(self.bounds.origin, point));
         }
         let color = color_to_hsla(style.color());
         self.cx.paint_path(path, color);
@@ -133,7 +133,7 @@ impl<'a, 'b> DrawingBackend for GpuiBackend<'a, 'b> {
         pos: BackendCoord,
     ) -> Result<(), DrawingErrorKind<Self::ErrorType>> {
         let color = color_to_hsla(style.color());
-        let point = self.bounds.origin + cood_to_point(pos);
+        let point = coord_to_point(self.bounds.origin, pos);
         let shared_string = SharedString::from(text.to_string());
         let size = px(style.size() as _);
         let ts = self.cx.text_system();

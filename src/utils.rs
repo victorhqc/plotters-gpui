@@ -1,7 +1,10 @@
 use gpui::{point, px};
 
-pub fn cood_to_point(cood: plotters_backend::BackendCoord) -> gpui::Point<gpui::Pixels> {
-    point(px(cood.0 as f32), px(cood.1 as f32))
+pub fn coord_to_point(
+    origin: gpui::Point<gpui::Pixels>,
+    coord: plotters_backend::BackendCoord,
+) -> gpui::Point<gpui::Pixels> {
+    origin + point(px(coord.0 as f32), px(coord.1 as f32))
 }
 pub fn color_to_hsla(color: plotters_backend::BackendColor) -> gpui::Hsla {
     gpui::Rgba {

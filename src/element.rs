@@ -1,16 +1,10 @@
 use crate::backend::GpuiBackend;
-use gpui::{
-    bounds, canvas, Bounds, IntoElement, Pixels, Render, Styled, ViewContext, WindowContext,
-};
+use gpui::{canvas, Bounds, IntoElement, Pixels, Render, Styled, ViewContext, WindowContext};
 use parking_lot::RwLock;
-use plotters::chart::ChartBuilder;
-use plotters::coord::ranged1d::{AsRangedCoord, ValueFormatter};
 use plotters::coord::Shift;
 use plotters::drawing::{DrawingArea, IntoDrawingArea};
 use plotters::prelude::*;
-use plotters_backend::BackendColor;
-use std::fmt::{Debug, Display};
-use std::ops::Range;
+use plotters_backend::DrawingErrorKind;
 use std::sync::Arc;
 use tracing::error;
 
@@ -46,10 +40,9 @@ impl PlottersDrawAreaViewer {
         let mut model = self.model.write();
         let root = GpuiBackend::new(bounds, cx).into_drawing_area();
         root.fill(&model.backend_color)?;
-        model
-            .chart
-            .plot(&root)
-            .map_err(DrawingAreaErrorKind::BackendError)?;
+        model.chart.plot(&root).map_err(|err| {
+            DrawingAreaErrorKind::BackendError(DrawingErrorKind::DrawingError(err))
+        })?;
         root.present()?;
         Ok(())
     }
