@@ -1,0 +1,10 @@
+[package]
+name = "plotters-gpui-backend"
+version = "0.1.0"
+edition = "2024"
+authors = ["Jakku Sakura <qjk2001@gmail.com>"]
+repository = "https://github.com/JakkuSakura/plotters-gpui-backend"
+description = "Plotting with gpui in Rust"
+license = "MIT"
+
+[dependencies]
