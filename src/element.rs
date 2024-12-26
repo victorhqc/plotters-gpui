@@ -101,7 +101,7 @@ macro_rules! impl_plotters_char_for_tuple {
 }
 macro_rules! impl_plotters_char_for_all_tuples {
     ($first:ident, $($rest:ident),*) => {
-        impl_plotters_char_for_tuple!($first);
+        impl_plotters_char_for_tuple!($first $(, $rest)*);
         impl_plotters_char_for_all_tuples!($($rest),*);
     };
     ($last:ident) => {
