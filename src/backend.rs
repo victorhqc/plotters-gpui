@@ -1,10 +1,9 @@
 use crate::line::Line;
 use crate::utils::{color_to_hsla, cood_to_point};
-use gpui::{Bounds, Pixels, SharedString, TextRun, point, px};
+use gpui::{point, px, Bounds, Pixels, SharedString, TextRun};
 use plotters_backend::{
     BackendColor, BackendCoord, BackendStyle, BackendTextStyle, DrawingBackend, DrawingErrorKind,
 };
-use std::convert::Infallible;
 
 /// The embedded backend for plotters in gpui
 pub struct GpuiBackendEmbedded<'a, 'b> {
@@ -18,7 +17,7 @@ impl<'a, 'b> GpuiBackendEmbedded<'a, 'b> {
     }
 }
 impl<'a, 'b> DrawingBackend for GpuiBackendEmbedded<'a, 'b> {
-    type ErrorType = Infallible;
+    type ErrorType = crate::Error;
 
     fn get_size(&self) -> (u32, u32) {
         let size = self.bounds.size;
@@ -139,16 +138,25 @@ impl<'a, 'b> DrawingBackend for GpuiBackendEmbedded<'a, 'b> {
         let size = px(style.size() as _);
         let ts = self.cx.text_system();
         let shaped_line = ts
-            .shape_line(shared_string, size, &[TextRun {
-                len: text.len(),
-                font: self.cx.text_style().font(),
-                color,
-                background_color: None,
-                underline: None,
-                strikethrough: None,
-            }])
-            .unwrap();
-        shaped_line.paint(point, size, self.cx).unwrap();
+            .shape_line(
+                shared_string,
+                size,
+                &[TextRun {
+                    len: text.len(),
+                    font: self.cx.text_style().font(),
+                    color,
+                    background_color: None,
+                    underline: None,
+                    strikethrough: None,
+                }],
+            )
+            .map_err(|err| DrawingErrorKind::FontError(err.to_string().into()))?;
+        shaped_line.paint(point, size, self.cx).map_err(|err| {
+            DrawingErrorKind::DrawingError(std::io::Error::new(
+                std::io::ErrorKind::Other,
+                err.to_string(),
+            ))
+        })?;
         Ok(())
     }
 }

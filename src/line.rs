@@ -1,4 +1,4 @@
-use gpui::{Bounds, Hsla, Path, Pixels, Point, WindowContext};
+use gpui::{Hsla, Path, Pixels, Point, WindowContext};
 
 #[derive(Clone, Debug)]
 pub struct Line {
