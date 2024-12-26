@@ -6,17 +6,17 @@ use plotters_backend::{
 };
 
 /// The embedded backend for plotters in gpui
-pub struct GpuiBackendEmbedded<'a, 'b> {
+pub struct GpuiBackend<'a, 'b> {
     bounds: Bounds<Pixels>,
     cx: &'a mut gpui::WindowContext<'b>,
 }
-impl<'a, 'b> GpuiBackendEmbedded<'a, 'b> {
+impl<'a, 'b> GpuiBackend<'a, 'b> {
     /// Create a new embedded backend
     pub fn new(bounds: Bounds<Pixels>, cx: &'a mut gpui::WindowContext<'b>) -> Self {
         Self { bounds, cx }
     }
 }
-impl<'a, 'b> DrawingBackend for GpuiBackendEmbedded<'a, 'b> {
+impl<'a, 'b> DrawingBackend for GpuiBackend<'a, 'b> {
     type ErrorType = crate::Error;
 
     fn get_size(&self) -> (u32, u32) {

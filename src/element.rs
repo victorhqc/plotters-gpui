@@ -1,11 +1,11 @@
-use crate::backend::GpuiBackendEmbedded;
+use crate::backend::GpuiBackend;
 use gpui::{
-    Bounds, IntoElement, Pixels, Render, Styled, ViewContext, WindowContext, bounds, canvas,
+    bounds, canvas, Bounds, IntoElement, Pixels, Render, Styled, ViewContext, WindowContext,
 };
 use parking_lot::RwLock;
 use plotters::chart::ChartBuilder;
-use plotters::coord::Shift;
 use plotters::coord::ranged1d::{AsRangedCoord, ValueFormatter};
+use plotters::coord::Shift;
 use plotters::drawing::{DrawingArea, IntoDrawingArea};
 use plotters::prelude::*;
 use plotters_backend::BackendColor;
@@ -44,7 +44,7 @@ impl PlottersDrawAreaViewer {
         cx: &mut WindowContext,
     ) -> Result<(), DrawingAreaErrorKind<crate::Error>> {
         let mut model = self.model.write();
-        let root = GpuiBackendEmbedded::new(bounds, cx).into_drawing_area();
+        let root = GpuiBackend::new(bounds, cx).into_drawing_area();
         root.fill(&model.backend_color)?;
         model
             .chart
@@ -69,18 +69,18 @@ impl Render for PlottersDrawAreaViewer {
     }
 }
 pub trait PlottersChart {
-    fn plot(&mut self, area: &DrawingArea<GpuiBackendEmbedded, Shift>) -> Result<(), crate::Error>;
+    fn plot(&mut self, area: &DrawingArea<GpuiBackend, Shift>) -> Result<(), crate::Error>;
 }
 impl PlottersChart for () {
-    fn plot(&mut self, _: &DrawingArea<GpuiBackendEmbedded, Shift>) -> Result<(), crate::Error> {
+    fn plot(&mut self, _: &DrawingArea<GpuiBackend, Shift>) -> Result<(), crate::Error> {
         Ok(())
     }
 }
 impl<F> PlottersChart for F
 where
-    F: FnMut(&DrawingArea<GpuiBackendEmbedded, Shift>) -> Result<(), crate::Error>,
+    F: FnMut(&DrawingArea<GpuiBackend, Shift>) -> Result<(), crate::Error>,
 {
-    fn plot(&mut self, area: &DrawingArea<GpuiBackendEmbedded, Shift>) -> Result<(), crate::Error> {
+    fn plot(&mut self, area: &DrawingArea<GpuiBackend, Shift>) -> Result<(), crate::Error> {
         self(area)
     }
 }
@@ -91,7 +91,7 @@ macro_rules! impl_plotters_char_for_tuple {
         where
             $($name: PlottersChart,)*
         {
-            fn plot(&mut self, area: &DrawingArea<GpuiBackendEmbedded, Shift>) -> Result<(), crate::Error> {
+            fn plot(&mut self, area: &DrawingArea<GpuiBackend, Shift>) -> Result<(), crate::Error> {
                 let ($($name,)*) = self;
                 $($name.plot(area)?;)*
                 Ok(())
