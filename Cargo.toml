@@ -16,3 +16,8 @@ tracing = "0.1"
 [features]
 default = []
 plotters = ["dep:plotters"]
+
+
+[[example]]
+name = "plotters-gpui-plot"
+required-features = ["plotters"]

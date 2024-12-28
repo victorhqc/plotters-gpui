@@ -14,7 +14,7 @@ struct MainViewer {
 
 impl MainViewer {
     fn new(model: Arc<RwLock<PlottersDrawAreaModel>>, cx: &mut WindowContext) -> Self {
-        let mut figure = PlottersDrawAreaViewer::with_shared_model(model);
+        let figure = PlottersDrawAreaViewer::with_shared_model(model);
 
         Self {
             figure: cx.new_view(move |_| figure),
@@ -66,7 +66,10 @@ impl Animation {
     }
 }
 impl PlottersChart for Animation {
-    fn plot(&mut self, root: &DrawingArea<GpuiBackend, Shift>) -> Result<(), plotters_gpui::Error> {
+    fn plot(
+        &mut self,
+        root: &DrawingArea<GpuiBackend, Shift>,
+    ) -> Result<(), plotters_gpui::DrawingErrorKind> {
         let mut chart = ChartBuilder::on(&root)
             .caption("Animation", ("sans-serif", 24).into_font())
             .margin(5)
@@ -82,12 +85,12 @@ impl PlottersChart for Animation {
             chart.draw_series(LineSeries::new(line, &BLACK)).unwrap();
         }
 
-        chart
-            .configure_series_labels()
-            .background_style(&WHITE.mix(0.8))
-            .border_style(&BLACK)
-            .draw()
-            .unwrap();
+        // chart
+        //     .configure_series_labels()
+        //     .background_style(&WHITE.mix(0.8))
+        //     .border_style(&BLACK)
+        //     .draw()
+        //     .unwrap();
         Ok(())
     }
 }
