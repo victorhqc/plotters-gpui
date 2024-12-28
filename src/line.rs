@@ -1,4 +1,5 @@
-use gpui::{Hsla, Path, Pixels, Point, WindowContext};
+use gpui::{point, Hsla, Path, Pixels, Point, WindowContext};
+use tracing::warn;
 
 #[derive(Clone, Debug)]
 pub struct Line {
@@ -30,16 +31,29 @@ impl Line {
     }
 
     pub fn render_pixels(&mut self, cx: &mut WindowContext) {
-        let mut path = Path::new(self.points[0].into());
-        for point in self.points.iter().cloned().skip(1) {
-            path.line_to(point.into());
+        if self.points.len() < 1 {
+            warn!("Line must have at least 1 points to render");
+            return;
+        }
+        let first_point: Point<Pixels> = self.points[0].into();
+        let width = self.width;
+
+        let mut angle = f32::atan2(
+            self.points.first().unwrap().y.0 - self.points.last().unwrap().y.0,
+            self.points.first().unwrap().x.0 - self.points.last().unwrap().x.0,
+        );
+        angle += std::f32::consts::FRAC_PI_2;
+        let shift = point(width * f32::cos(angle), width * f32::sin(angle));
+        let mut reversed_points = vec![first_point + shift];
+        let mut path = Path::new(first_point);
+        for p in self.points.iter().cloned().skip(1) {
+            let p: Point<Pixels> = p.into();
+            path.line_to(p);
+
+            reversed_points.push(p + shift);
         }
         // now do the reverse to close the path
-        for point in self.points.iter().cloned().rev() {
-            let mut p: Point<Pixels> = point.into();
-            // TODO: compute new points based on the slope
-            p.x.0 -= self.width.0;
-            p.y.0 += self.width.0;
+        for p in reversed_points.into_iter().rev() {
             path.line_to(p);
         }
 
