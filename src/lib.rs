@@ -5,3 +5,4 @@ mod line;
 mod utils;
 
 pub type Error = std::io::Error;
+pub type DrawingErrorKind = plotters_backend::DrawingErrorKind<Error>;

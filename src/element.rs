@@ -4,7 +4,6 @@ use parking_lot::RwLock;
 use plotters::coord::Shift;
 use plotters::drawing::{DrawingArea, IntoDrawingArea};
 use plotters::prelude::*;
-use plotters_backend::DrawingErrorKind;
 use std::sync::Arc;
 use tracing::error;
 
@@ -40,9 +39,10 @@ impl PlottersDrawAreaViewer {
         let mut model = self.model.write();
         let root = GpuiBackend::new(bounds, cx).into_drawing_area();
         root.fill(&model.backend_color)?;
-        model.chart.plot(&root).map_err(|err| {
-            DrawingAreaErrorKind::BackendError(DrawingErrorKind::DrawingError(err))
-        })?;
+        model
+            .chart
+            .plot(&root)
+            .map_err(DrawingAreaErrorKind::BackendError)?;
         root.present()?;
         Ok(())
     }
@@ -62,18 +62,24 @@ impl Render for PlottersDrawAreaViewer {
     }
 }
 pub trait PlottersChart {
-    fn plot(&mut self, area: &DrawingArea<GpuiBackend, Shift>) -> Result<(), crate::Error>;
+    fn plot(
+        &mut self,
+        area: &DrawingArea<GpuiBackend, Shift>,
+    ) -> Result<(), crate::DrawingErrorKind>;
 }
 impl PlottersChart for () {
-    fn plot(&mut self, _: &DrawingArea<GpuiBackend, Shift>) -> Result<(), crate::Error> {
+    fn plot(&mut self, _: &DrawingArea<GpuiBackend, Shift>) -> Result<(), crate::DrawingErrorKind> {
         Ok(())
     }
 }
 impl<F> PlottersChart for F
 where
-    F: FnMut(&DrawingArea<GpuiBackend, Shift>) -> Result<(), crate::Error>,
+    F: FnMut(&DrawingArea<GpuiBackend, Shift>) -> Result<(), crate::DrawingErrorKind>,
 {
-    fn plot(&mut self, area: &DrawingArea<GpuiBackend, Shift>) -> Result<(), crate::Error> {
+    fn plot(
+        &mut self,
+        area: &DrawingArea<GpuiBackend, Shift>,
+    ) -> Result<(), crate::DrawingErrorKind> {
         self(area)
     }
 }
@@ -84,7 +90,7 @@ macro_rules! impl_plotters_char_for_tuple {
         where
             $($name: PlottersChart,)*
         {
-            fn plot(&mut self, area: &DrawingArea<GpuiBackend, Shift>) -> Result<(), crate::Error> {
+            fn plot(&mut self, area: &DrawingArea<GpuiBackend, Shift>) -> Result<(), crate::DrawingErrorKind> {
                 let ($($name,)*) = self;
                 $($name.plot(area)?;)*
                 Ok(())
