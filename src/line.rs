@@ -8,6 +8,12 @@ pub struct Line {
     pub color: Hsla,
 }
 
+impl Default for Line {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Line {
     pub fn new() -> Self {
         Self {
@@ -16,6 +22,7 @@ impl Line {
             color: gpui::black(),
         }
     }
+
     pub fn between_points(start: Point<Pixels>, end: Point<Pixels>) -> Self {
         let mut line = Self::new();
         line.add_point(start);
@@ -23,8 +30,13 @@ impl Line {
         line
     }
 
-    pub fn width(mut self, width: f64) -> Self {
+    pub fn width(mut self, width: impl Into<Pixels>) -> Self {
         self.width = width.into();
+        self
+    }
+
+    pub fn color(mut self, color: impl Into<Hsla>) -> Self {
+        self.color = color.into();
         self
     }
 
@@ -38,17 +50,20 @@ impl Line {
             return;
         }
 
-        let first_point = self.points[0];
         let width = self.width;
-        let mut angle = f32::atan2(
-            self.points.first().unwrap().y.0 - self.points.last().unwrap().y.0,
-            self.points.first().unwrap().x.0 - self.points.last().unwrap().x.0,
-        );
+
+        let (Some(first), Some(last)) = (self.points.first().copied(), self.points.last().copied())
+        else {
+            return;
+        };
+
+        let mut angle = f32::atan2(first.y.0 - last.y.0, first.x.0 - last.x.0);
         angle += std::f32::consts::FRAC_PI_2;
         let shift = point(width * f32::cos(angle), width * f32::sin(angle));
-        let mut reversed_points = vec![first_point + shift];
-        let mut path = Path::new(first_point);
-        for p in self.points.iter().cloned().skip(1) {
+
+        let mut reversed_points = vec![first + shift];
+        let mut path = Path::new(first);
+        for &p in &self.points[1..] {
             path.line_to(p);
             reversed_points.push(p + shift);
         }
