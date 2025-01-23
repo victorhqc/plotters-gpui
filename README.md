@@ -15,7 +15,11 @@ plotters-gpui = { git = "https://github.com/JakkuSakura/plotters-gpui" }
 If you failed to build on linux due to font-kit, you might need to add the following to your `Cargo.toml`:
 
 ```toml
+[dependencies]
 font-kit = { git = "https://github.com/zed-industries/font-kit", features = ["source-fontconfig-dlopen"] }
+[patch.crates-io]
+# because plotters' font-kit might fail
+font-kit = { git = "https://github.com/zed-industries/font-kit" }
 ```
 
 You might be interested in [https://github.com/JakkuSakura/gpui-plot](https://github.com/JakkuSakura/gpui-plot), as it
