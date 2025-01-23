@@ -16,10 +16,16 @@ If you failed to build on linux due to font-kit, you might need to add the follo
 
 ```toml
 [dependencies]
-font-kit = { git = "https://github.com/zed-industries/font-kit", features = ["source-fontconfig-dlopen"] }
-[patch.crates-io]
+font-kit = { git = "https://github.com/JakkuSakura/font-kit-patched", features = ["source-fontconfig-dlopen"] }
+
+# this is to sync versions of font-kit
+[patch."https://github.com/zed-instustries/font-kit"]
+font-kit = { git = "https://github.com/JakkuSakura/font-kit-patched" }
+
 # because plotters' font-kit might fail
-font-kit = { git = "https://github.com/zed-industries/font-kit" }
+[patch.crates-io]
+font-kit = { git = "https://github.com/JakkuSakura/font-kit-patched" }
+
 ```
 
 You might be interested in [https://github.com/JakkuSakura/gpui-plot](https://github.com/JakkuSakura/gpui-plot), as it
