@@ -12,6 +12,12 @@ Due to gpui not being published on crates.io, you need to add the following to y
 plotters-gpui = { git = "https://github.com/JakkuSakura/plotters-gpui" }
 ```
 
+If you failed to build on linux due to font-kit, you might need to add the following to your `Cargo.toml`:
+
+```toml
+font-kit = { git = "https://github.com/zed-industries/font-kit", features = ["source-fontconfig-dlopen"] }
+```
+
 You might be interested in [https://github.com/JakkuSakura/gpui-plot](https://github.com/JakkuSakura/gpui-plot), as it
 provides interactivity and more stuff on top of plotters-gpui
 
@@ -38,3 +44,4 @@ Enables the Metal Performance HUD.
 ```shell
 MTL_HUD_ENABLED=1 cargo run ...
 ```
+
