@@ -59,7 +59,10 @@ impl CpuUsage {
             return true;
         }
         let (time, _) = self.points.back().unwrap();
-        time.elapsed().unwrap().as_secs_f32() > 0.1
+        let Ok(elapsed) = time.elapsed() else {
+            return false;
+        };
+        elapsed.as_secs_f32() > 0.1
     }
     fn try_sample(&mut self) {
         if !self.should_sample() {
