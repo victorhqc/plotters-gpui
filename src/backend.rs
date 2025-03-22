@@ -87,10 +87,7 @@ impl DrawingBackend for GpuiBackend<'_> {
             builder.line_to(point(bottom_right.x, upper_left.y));
             builder.line_to(upper_left);
             let path = builder.build().map_err(|err| {
-                DrawingErrorKind::DrawingError(std::io::Error::new(
-                    std::io::ErrorKind::Other,
-                    err.to_string(),
-                ))
+                DrawingErrorKind::DrawingError(std::io::Error::other(err.to_string()))
             })?;
 
             self.window.paint_path(path, color);
@@ -153,10 +150,7 @@ impl DrawingBackend for GpuiBackend<'_> {
         }
 
         let path = builder.build().map_err(|err| {
-            DrawingErrorKind::DrawingError(std::io::Error::new(
-                std::io::ErrorKind::Other,
-                err.to_string(),
-            ))
+            DrawingErrorKind::DrawingError(std::io::Error::other(err.to_string()))
         })?;
 
         let color = color_to_hsla(style.color());
@@ -212,10 +206,7 @@ impl DrawingBackend for GpuiBackend<'_> {
         shaped_line
             .paint(point, size, self.window, self.cx)
             .map_err(|err| {
-                DrawingErrorKind::DrawingError(std::io::Error::new(
-                    std::io::ErrorKind::Other,
-                    err.to_string(),
-                ))
+                DrawingErrorKind::DrawingError(std::io::Error::other(err.to_string()))
             })?;
 
         Ok(())
