@@ -23,6 +23,7 @@ font-kit = { git = "https://github.com/JakkuSakura/font-kit-patched" }
 # because plotters' font-kit might fail
 [patch.crates-io]
 font-kit = { git = "https://github.com/JakkuSakura/font-kit-patched" }
+pathfinder_simd = { git = "https://github.com/theoparis/pathfinder.git" }
 
 [dev-dependencies]
 chrono = "0.4"
