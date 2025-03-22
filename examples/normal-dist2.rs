@@ -1,4 +1,7 @@
-use gpui::{div, prelude::*, App, AppContext, Application, Context, Entity, Window, WindowOptions};
+use gpui::{
+    div, prelude::*, px, size, App, AppContext, Application, Bounds, Context, Entity, Window,
+    WindowBounds, WindowOptions,
+};
 use parking_lot::RwLock;
 use plotters::coord::Shift;
 use plotters::drawing::DrawingArea;
@@ -119,18 +122,15 @@ fn main_viewer(cx: &mut App) -> MainViewer {
 }
 
 fn main() {
-    Application::new().run(move |cx: &mut App| {
+    Application::new().run(|cx: &mut App| {
+        let bounds = Bounds::centered(None, size(px(800.0), px(600.0)), cx);
         cx.open_window(
             WindowOptions {
-                focus: true,
+                window_bounds: Some(WindowBounds::Windowed(bounds)),
                 ..Default::default()
             },
-            move |_, cx| {
-                let view = main_viewer(cx);
-                cx.new(move |_| view)
-            },
+            move |_, cx| cx.new(move |cx| main_viewer(cx)),
         )
         .unwrap();
-        cx.activate(true);
     });
 }

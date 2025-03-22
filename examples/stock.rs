@@ -137,6 +137,5 @@ fn main() {
             move |_, cx| cx.new(move |cx| main_viewer(cx)),
         )
         .unwrap();
-        cx.activate(true);
     });
 }
