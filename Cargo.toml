@@ -8,22 +8,17 @@ description = "Plotting with gpui in Rust"
 license = "MIT"
 
 [dependencies]
-plotters-backend = "0.3.7"
-gpui = { git = "https://github.com/zed-industries/zed", rev = "044eb7b99048e79da5aa3f2dd489ff3ed8f97a32" }
 parking_lot = "0.12.3"
-plotters = { version = "0.3.7", optional = true }
 tracing = "0.1"
-font-kit = { git = "https://github.com/JakkuSakura/font-kit", branch = "gpui", features = ["source-fontconfig-dlopen"] }
-
-
-# this is to sync versions of font-kit
-[patch."https://github.com/zed-industries/font-kit"]
-font-kit = { git = "https://github.com/JakkuSakura/font-kit", branch = "gpui" }
+plotters-backend = { git = "https://github.com/JakkuSakura/plotters", tag = "v0.3.7-gpui"}
+gpui = { git = "https://github.com/zed-industries/zed", rev = "044eb7b99048e79da5aa3f2dd489ff3ed8f97a32" }
+plotters = { git = "https://github.com/JakkuSakura/plotters", tag = "v0.3.7-gpui", optional = true }
 
 # because plotters' font-kit might fail
 [patch.crates-io]
 pathfinder_simd = { git = "https://github.com/theoparis/pathfinder.git" }
-font-kit = { git = "https://github.com/JakkuSakura/font-kit", branch = "gpui" }
+plotters = { git = "https://github.com/JakkuSakura/plotters", tag = "v0.3.7-gpui" }
+plotters-backend = { git = "https://github.com/JakkuSakura/plotters", tag = "v0.3.7-gpui" }
 
 [dev-dependencies]
 chrono = "0.4"
