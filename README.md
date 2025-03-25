@@ -15,16 +15,16 @@ plotters-gpui = { git = "https://github.com/JakkuSakura/plotters-gpui" }
 If you failed to build on linux due to font-kit, you might need to add the following to your `Cargo.toml`:
 
 ```toml
-[dependencies]
-font-kit = { git = "https://github.com/JakkuSakura/font-kit-patched", features = ["source-fontconfig-dlopen"] }
+font-kit = { git = "https://github.com/JakkuSakura/font-kit", features = ["source-fontconfig-dlopen"] }
+
 
 # this is to sync versions of font-kit
 [patch."https://github.com/zed-instustries/font-kit"]
-font-kit = { git = "https://github.com/JakkuSakura/font-kit-patched" }
+font-kit = { git = "https://github.com/JakkuSakura/font-kit", branch = "gpui"}
 
 # because plotters' font-kit might fail
 [patch.crates-io]
-font-kit = { git = "https://github.com/JakkuSakura/font-kit-patched" }
+font-kit = { git = "https://github.com/JakkuSakura/font-kit", branch = "gpui" }
 
 ```
 
