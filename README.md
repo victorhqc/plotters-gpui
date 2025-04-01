@@ -15,8 +15,6 @@ plotters-gpui = { git = "https://github.com/JakkuSakura/plotters-gpui" }
 If you failed to build on linux due to font-kit, you might need to add the following to your `Cargo.toml`:
 
 ```toml
-font-kit = { git = "https://github.com/JakkuSakura/font-kit", branch = "gpui", features = ["source-fontconfig-dlopen"] }
-
 # because plotters' font-kit might fail
 [patch.crates-io]
 pathfinder_simd = { git = "https://github.com/theoparis/pathfinder.git" }
