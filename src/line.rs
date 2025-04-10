@@ -43,6 +43,9 @@ impl Line {
     pub fn add_point(&mut self, point: Point<Pixels>) {
         self.points.push(point);
     }
+    pub fn clear(&mut self) {
+        self.points.clear();
+    }
 
     pub fn render_pixels(&mut self, window: &mut Window) {
         if self.points.is_empty() {
