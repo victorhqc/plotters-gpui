@@ -10,8 +10,9 @@ license = "MIT"
 [dependencies]
 parking_lot = "0.12.3"
 tracing = "0.1"
-plotters-backend = { git = "https://github.com/JakkuSakura/plotters", tag = "v0.3.7-gpui"}
-gpui = { git = "https://github.com/zed-industries/zed", rev = "044eb7b99048e79da5aa3f2dd489ff3ed8f97a32" }
+plotters-backend = { git = "https://github.com/JakkuSakura/plotters", tag = "v0.3.7-gpui" }
+gpui = { git = "https://github.com/huacnlee/zed.git", branch = "webview" }
+# gpui = { git = "https://github.com/zed-industries/zed", rev = "1854d3bf88c99fb84202e40c71a2f947b6e1e9d9" }
 plotters = { git = "https://github.com/JakkuSakura/plotters", tag = "v0.3.7-gpui", optional = true }
 
 # because plotters' font-kit might fail
